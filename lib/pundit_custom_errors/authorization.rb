@@ -15,7 +15,7 @@ module PunditCustomErrors
       true
     end
 
-    protected
+  protected
 
     def generate_error_for(policy, query, record)
       if policy.respond_to? :error_message
@@ -26,10 +26,12 @@ module PunditCustomErrors
       message ||= translate_error_message_for_query(query, policy)
       message ||= "not allowed to #{query} this #{record}"
 
-      error = Pundit::NotAuthorizedError.new(message)
-
-      error.query, error.record, error.policy = query, record, policy
-      error
+      Pundit::NotAuthorizedError.new(
+                                      query: query,
+                                      record: record,
+                                      policy: policy,
+                                      message: message
+                                    )
     end
 
     def translate_error_message_for_query(query, policy)
